@@ -5,6 +5,7 @@ api-version: 1.13
 authors: [jaylawl]
 description: Monitor MSPT performance
 website: https://github.com/jaylawl
+softdepend: [PlaceholderAPI]
 
 commands:
   tickmonitor:
