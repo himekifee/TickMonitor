@@ -1,7 +1,7 @@
 package de.jaylawl.tickmonitor.cmd;
 
-import de.jaylawl.tickmonitor.Main;
-import de.jaylawl.tickmonitor.monitor.TickMonitor;
+import de.jaylawl.tickmonitor.TickMonitor;
+import de.jaylawl.tickmonitor.monitor.TickCounter;
 import de.jaylawl.tickmonitor.util.TabHelper;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -18,6 +18,10 @@ import java.util.Collections;
 import java.util.List;
 
 public class MasterCommand implements CommandExecutor, TabCompleter {
+    TickMonitor plugin;
+    public MasterCommand(TickMonitor plugin) {
+        this.plugin = plugin;
+    }
 
     @Override
     public @Nullable List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command cmd, @NotNull String label, @NotNull String[] args) {
@@ -52,9 +56,9 @@ public class MasterCommand implements CommandExecutor, TabCompleter {
             mainArg = args[0].toLowerCase();
         }
 
-        TickMonitor tickMonitor = Main.getTickMonitor();
+        TickCounter tickCounter = plugin.getTickCounter();
 
-        if (!tickMonitor.isEnabled() && Arrays.asList("getlatest", "get", "monitor", "reset").contains(mainArg)) {
+        if (!tickCounter.isEnabled() && Arrays.asList("getlatest", "get", "monitor", "reset").contains(mainArg)) {
             sender.sendMessage("§cTickMonitor is currently disabled; cancelling command");
             return true;
         }
@@ -63,27 +67,27 @@ public class MasterCommand implements CommandExecutor, TabCompleter {
 
             case "enable":
             case "on":
-                if (tickMonitor.isEnabled()) {
+                if (tickCounter.isEnabled()) {
                     sender.sendMessage("TickMonitor is already enabled");
                 } else {
-                    tickMonitor.setEnabled(true);
+                    tickCounter.setEnabled(true);
                     sender.sendMessage("Successfully enabled & reset TickMonitor");
                 }
                 break;
 
             case "disable":
             case "off":
-                if (!tickMonitor.isEnabled()) {
+                if (!tickCounter.isEnabled()) {
                     sender.sendMessage("TickMonitor is already disabled");
                 } else {
-                    tickMonitor.setEnabled(false);
+                    tickCounter.setEnabled(false);
                     sender.sendMessage("Successfully disabled TickMonitor");
                 }
                 break;
 
             case "getlatest":
             case "get":
-                double[] averages = tickMonitor.getAverages();
+                double[] averages = tickCounter.getAverages();
                 DecimalFormat decimalFormat = new DecimalFormat("#.##");
                 sender.sendMessage(
                         "Latest MSPT" +
@@ -99,16 +103,16 @@ public class MasterCommand implements CommandExecutor, TabCompleter {
                     return true;
                 }
                 Player player = ((Player) sender);
-                if (tickMonitor.isMonitoring(player)) {
-                    tickMonitor.removeMonitoringPlayer(player);
+                if (tickCounter.isMonitoring(player)) {
+                    tickCounter.removeMonitoringPlayer(player);
                     player.sendActionBar("§r ");
                 } else {
-                    tickMonitor.addMonitoringPlayer(player);
+                    tickCounter.addMonitoringPlayer(player);
                 }
                 break;
 
             case "reset":
-                tickMonitor.reset();
+                tickCounter.reset();
                 sender.sendMessage("Successfully reset MSPT timings");
                 break;
         }

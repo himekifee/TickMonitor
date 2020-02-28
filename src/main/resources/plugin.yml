@@ -1,9 +1,11 @@
-main: de.jaylawl.tickmonitor.Main
 name: TickMonitor
-version: "2.1.0"
-author: jaylawl
-website: https://github.com/jaylawl
+version: @version@
+main: de.jaylawl.tickmonitor.TickMonitor
+api-version: 1.13
+authors: [jaylawl]
 description: Monitor MSPT performance
+website: https://github.com/jaylawl
+
 commands:
   tickmonitor:
     aliases: [tm, mspt]

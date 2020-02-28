@@ -1,2 +1,9 @@
-# Project exclude paths
-/out/
+### Gradle ###
+.gradle
+/build/
+
+# Ignore Gradle GUI config
+gradle-app.setting
+
+.idea/
+TickMonitor.iml

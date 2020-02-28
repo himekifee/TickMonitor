@@ -1,6 +1,7 @@
 package de.jaylawl.tickmonitor.monitor;
 
 import com.destroystokyo.paper.event.server.ServerTickEndEvent;
+import de.jaylawl.tickmonitor.TickMonitor;
 import de.jaylawl.tickmonitor.event.MonitoringCycleCompleteEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
@@ -14,8 +15,9 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class TickMonitor implements Listener {
+public class TickCounter implements Listener {
 
+    TickMonitor plugin;
     private boolean enabled = true;
 
     private int[] indices = new int[]{0, 0, 0};
@@ -26,7 +28,8 @@ public class TickMonitor implements Listener {
 
     private Collection<OfflinePlayer> monitoringPlayers = new ArrayList<>();
 
-    public TickMonitor() {
+    public TickCounter(TickMonitor plugin) {
+        this.plugin = plugin;
     }
 
     @EventHandler(priority = EventPriority.MONITOR)

@@ -1,17 +1,18 @@
 package de.jaylawl.tickmonitor;
 
 import de.jaylawl.tickmonitor.cmd.MasterCommand;
-import de.jaylawl.tickmonitor.monitor.TickMonitor;
+import de.jaylawl.tickmonitor.monitor.TickCounter;
+import org.bukkit.Bukkit;
 import org.bukkit.command.PluginCommand;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.logging.Logger;
 
-public class Main extends JavaPlugin {
+public class TickMonitor extends JavaPlugin {
 
-    private static Main instance;
-    private TickMonitor tickMonitor;
+    private static TickMonitor instance;
+    private TickCounter tickCounter;
 
     @Override
     public void onEnable() {
@@ -30,15 +31,13 @@ public class Main extends JavaPlugin {
             pluginManager.disablePlugin(this);
             return;
         }
+        tickCounter = new TickCounter(this);
 
-        instance = this;
-        tickMonitor = new TickMonitor();
-
-        pluginManager.registerEvents(tickMonitor, this);
+        pluginManager.registerEvents(tickCounter, this);
 
         PluginCommand masterCommand = getCommand("tickmonitor");
         if (masterCommand != null) {
-            MasterCommand cmd = new MasterCommand();
+            MasterCommand cmd = new MasterCommand(this);
             masterCommand.setExecutor(cmd);
             masterCommand.setTabCompleter(cmd);
             logger.info("Successfully enabled; starting monitoring of MSPTs...");
@@ -46,11 +45,15 @@ public class Main extends JavaPlugin {
             logger.info("§cFailed to enable the master command; disabling plugin");
             pluginManager.disablePlugin(this);
         }
+        if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
+            new TickPlaceholder(this).register();
+
+        }
 
     }
 
-    public static TickMonitor getTickMonitor() {
-        return instance.tickMonitor;
+    public TickCounter getTickCounter() {
+        return this.tickCounter;
     }
 
 }
